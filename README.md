@@ -1,7 +1,7 @@
-# Trivandrum Fashion Roaster 🎯
+# Fashion Roaster 🎯
 
 ## Basic Details
-### Team Name: SmartServe
+### Team Name: Syntax Squad
 
 ### Team Members
 - Team Lead: Durga N - LBSITW,POOJAPURA
@@ -11,7 +11,7 @@
 An interactive, AI-powered web platform that analyzes and lightheartedly roasts local street fashion, outfit choices, and aesthetic trends in Trivandrum with custom Malayalam cultural humor.
 
 ### The Problem (that doesn't exist)
-People walking through Trivandrum are wearing outfits without receiving immediate, unvarnished, AI-generated constructive criticism on their sartorial decisions.
+People walking through are wearing outfits without receiving immediate, unvarnished, AI-generated constructive criticism on their sartorial decisions.
 
 ### The Solution (that nobody asked for)
 A real-time fashion roasting engine that scans outfit uploads and generates funny, hyper-local fashion evaluations and ratings.
