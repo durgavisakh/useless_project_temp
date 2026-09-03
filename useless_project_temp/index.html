@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivandrum Fashion Roaster 🔥</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 { color: #ff4757; margin-bottom: 0.5rem; }
+        p { color: #aaa; }
+        input[type="file"] { display: none; }
+        .upload-btn, .roast-btn, .voice-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+        .upload-btn { background-color: #333; color: #fff; border: 1px solid #555; }
+        .roast-btn { background-color: #ff4757; color: #fff; width: 100%; font-size: 1rem; }
+        .voice-btn { background-color: #2ed573; color: #fff; width: 100%; font-size: 0.9rem; display: none; }
+        #preview {
+            max-width: 100%;
+            max-height: 250px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        #cinemaVideo {
+            width: 100%;
+            max-height: 280px;
+            border-radius: 8px;
+            margin-top: 15px;
+            background-color: #000;
+            display: none;
+        }
+        #result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #2a2a2a;
+            border-left: 4px solid #ff4757;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Fashion Critic 🔥</h1>
+    <p>Upload your outfit photo & get roasted with cinema video reaction!</p>
+
+    <label for="imageInput" class="upload-btn">📸 Choose Photo</label>
+    <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
+    
+    <div>
+        <img id="preview" src="" alt="Outfit Preview">
+    </div>
+
+    <button class="roast-btn" onclick="generateRoast()">HOW IS MY OUTFIT</button>
+
+    <!-- Reaction Video Element -->
+    <video id="cinemaVideo" controls playsinline></video>
+
+    <div id="result" style="display: none;"></div>
+    <button id="speakBtn" class="voice-btn" onclick="replayVideo()">▶️ Replay Video</button>
+</div>
+
+<script>
+    // Index pointer to alternate sequentially between 0 and 1
+    let currentVideoIndex = 0;
+
+    const videoRoasts = [
+        {
+            text: "എന്തര് പ്രഹസനമാടോ ഇത്! ഡ്രസ്സ് കണ്ടാൽ സഹിക്കാൻ പറ്റുന്നില്ലല്ലോ സാറേ!",
+            video: "roast1.mp4"
+        },
+        {
+            text: "കാണാൻ ഒരു ലുക്ക് ഇല്ലെന്നേയുള്ളൂ, ഭയങ്കര ബുദ്ധിയാ!",
+            video: "roast2.mp4"
+        }
+    ];
+
+    function previewImage() {
+        const file = document.getElementById('imageInput').files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('preview');
+                img.src = e.target.result;
+                img.style.display = "block";
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function generateRoast() {
+        const fileInput = document.getElementById('imageInput');
+        const resultDiv = document.getElementById('result');
+        const speakBtn = document.getElementById('speakBtn');
+        const videoPlayer = document.getElementById('cinemaVideo');
+
+        if (!fileInput.files[0]) {
+            alert('Please upload an image first!');
+            return;
+        }
+
+        resultDiv.style.display = "block";
+        resultDiv.innerText = "അളിയന്റെ ട്രീറ്റ് നോക്കട്ടെ... ⏳";
+        speakBtn.style.display = "none";
+
+        // Select item sequentially and increment index
+        const selected = videoRoasts[currentVideoIndex];
+        currentVideoIndex = (currentVideoIndex + 1) % videoRoasts.length;
+
+        // Force reload new video source
+        videoPlayer.src = selected.video;
+        videoPlayer.style.display = "block";
+        videoPlayer.load();
+
+        setTimeout(() => {
+            resultDiv.innerText = selected.text;
+            speakBtn.style.display = "inline-block";
+
+            videoPlayer.muted = false;
+            videoPlayer.play().catch(err => {
+                console.error("Error playing " + selected.video + ":", err);
+                alert("Could not play " + selected.video + ". Ensure the file is in your project folder.");
+            });
+        }, 500);
+    }
+
+    function replayVideo() {
+        const videoPlayer = document.getElementById('cinemaVideo');
+        if (videoPlayer.src) {
+            videoPlayer.currentTime = 0;
+            videoPlayer.play();
+        }
+    }
+</script>
+
+</body>
+</html>
