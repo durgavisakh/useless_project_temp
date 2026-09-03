@@ -5,101 +5,237 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivandrum Fashion Roaster 🔥</title>
     <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(23, 31, 48, 0.75);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #ff3366;
+            --secondary: #00f2fe;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: radial-gradient(circle at top center, #1e1b4b 0%, var(--bg-color) 70%);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
+
         .container {
-            background-color: #1e1e1e;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
             text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        h1 { color: #ff4757; margin-bottom: 0.5rem; }
-        p { color: #aaa; }
-        input[type="file"] { display: none; }
-        .upload-btn, .roast-btn, .voice-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 10px 0;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            border: none;
-        }
-        .upload-btn { background-color: #333; color: #fff; border: 1px solid #555; }
-        .roast-btn { background-color: #ff4757; color: #fff; width: 100%; font-size: 1rem; }
-        .voice-btn { background-color: #2ed573; color: #fff; width: 100%; font-size: 0.9rem; display: none; }
-        #preview {
-            max-width: 100%;
-            max-height: 250px;
-            margin: 15px 0;
-            border-radius: 8px;
-            display: none;
-        }
-        #cinemaVideo {
+            max-width: 550px;
             width: 100%;
-            max-height: 280px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+        p.subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        /* Dropzone */
+        .dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 1.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .dropzone:hover { border-color: var(--primary); }
+        .dropzone-content { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .dropzone-icon { font-size: 2rem; }
+        input[type="file"] { display: none; }
+
+        /* Preview Image inside Dropzone */
+        .preview-container { 
+            display: none; 
+            margin-top: 10px;
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
+
+        #preview { 
+            max-width: 100%; 
+            max-height: 200px; 
+            object-fit: contain; 
+            border-radius: 8px; 
+            display: block; 
+            margin: 0 auto;
+        }
+
+        /* Location Dropdown */
+        .select-group { margin-top: 1rem; text-align: left; }
+        .select-group label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
+        .location-select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            margin-top: 15px;
-            background-color: #000;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        /* Rating Score Bar */
+        .rating-box {
+            display: none;
+            margin-top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: left;
+        }
+        .rating-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00f2fe, #ff3366); transition: width 1s ease; }
+
+        /* Dialogue Box (Above Video) */
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            line-height: 1.5;
             display: none;
         }
-        #result {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #2a2a2a;
-            border-left: 4px solid #ff4757;
-            border-radius: 4px;
-            text-align: left;
-            font-size: 1.1rem;
-            line-height: 1.6;
+
+        /* Video Container Below Dialogue */
+        .video-box {
+            display: none;
+            margin-top: 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
         }
+
+        #cinemaVideo { 
+            width: 100%; 
+            max-height: 300px; 
+            border-radius: 8px; 
+            background: #000; 
+            display: block; 
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .roast-btn { background: linear-gradient(135deg, var(--primary) 0%, #d60036 100%); color: #fff; }
+        .secondary-btn { background: rgba(255, 255, 255, 0.08); color: var(--text-main); border: 1px solid var(--border-color); display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Fashion Critic 🔥</h1>
-    <p>Upload your outfit photo & get roasted with cinema video reaction!</p>
+    <span class="badge">AI Critic 3.0</span>
+    <h1>Trivandrum Fashion Roaster 🔥</h1>
+    <p class="subtitle">Upload your fit & brace for unvarnished cinema reactions</p>
 
-    <label for="imageInput" class="upload-btn">📸 Choose Photo</label>
+    <!-- Upload Box with Embedded Preview -->
+    <div class="dropzone" id="uploadDropzone" onclick="document.getElementById('imageInput').click()">
+        <div class="dropzone-content" id="dropzoneText">
+            <span class="dropzone-icon">📸</span>
+            <strong>Drop image or tap to upload</strong>
+        </div>
+        <div class="preview-container" id="previewWrapper">
+            <img id="preview" src="" alt="Outfit Preview">
+        </div>
+    </div>
     <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
-    
-    <div>
-        <img id="preview" src="" alt="Outfit Preview">
+
+    <!-- Location Selector -->
+    <div class="select-group">
+        <label for="location">📍 Where are you flexin' this fit?</label>
+        <select id="location" class="location-select">
+            <option value="Manaveeyam Veedhi">Manaveeyam Veedhi</option>
+            <option value="Lulu Mall Trivandrum">Lulu Mall Trivandrum</option>
+            <option value="Shangumugham Beach">Shangumugham Beach</option>
+            <option value="Technopark Campus">Technopark Campus</option>
+        </select>
     </div>
 
-    <button class="roast-btn" onclick="generateRoast()">HOW IS MY OUTFIT</button>
+    <button class="btn roast-btn" onclick="generateRoast()">🔥 How is My Outfit</button>
 
-    <!-- Reaction Video Element -->
-    <video id="cinemaVideo" controls playsinline></video>
+    <!-- Score Meter -->
+    <div class="rating-box" id="ratingBox">
+        <div class="rating-header">
+            <span>Drip Score</span>
+            <span id="scoreText">0/100</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
 
-    <div id="result" style="display: none;"></div>
-    <button id="speakBtn" class="voice-btn" onclick="replayVideo()">▶️ Replay Video</button>
+    <!-- Dialogue Result Box (Above Video) -->
+    <div id="result"></div>
+
+    <!-- Video Reaction Box (Below Dialogue) -->
+    <div class="video-box" id="videoWrapper">
+        <video id="cinemaVideo" controls playsinline></video>
+    </div>
+
+    <button id="shareBtn" class="btn secondary-btn" onclick="copyRoast()">📋 Copy Roast Text</button>
 </div>
 
 <script>
-    // Index pointer to alternate sequentially between 0 and 1
     let currentVideoIndex = 0;
 
     const videoRoasts = [
         {
-            text: "എന്തര് പ്രഹസനമാടോ ഇത്! ഡ്രസ്സ് കണ്ടാൽ സഹിക്കാൻ പറ്റുന്നില്ലല്ലോ സാറേ!",
-            video: "roast1.mp4"
+            text: "എന്തൊരു പ്രഹസനമാണ് സജി",
+            video: "roast1.mp4",
+            score: 24
         },
         {
             text: "കാണാൻ ഒരു ലുക്ക് ഇല്ലെന്നേയുള്ളൂ, ഭയങ്കര ബുദ്ധിയാ!",
-            video: "roast2.mp4"
+            video: "roast2.mp4",
+            score: 48
         }
     ];
 
@@ -108,9 +244,9 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = document.getElementById('preview');
-                img.src = e.target.result;
-                img.style.display = "block";
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('dropzoneText').innerHTML = "<span>📸 Photo selected! Tap to change</span>";
+                document.getElementById('previewWrapper').style.display = "block";
             }
             reader.readAsDataURL(file);
         }
@@ -119,45 +255,44 @@
     function generateRoast() {
         const fileInput = document.getElementById('imageInput');
         const resultDiv = document.getElementById('result');
-        const speakBtn = document.getElementById('speakBtn');
+        const shareBtn = document.getElementById('shareBtn');
         const videoPlayer = document.getElementById('cinemaVideo');
+        const videoWrapper = document.getElementById('videoWrapper');
+        const ratingBox = document.getElementById('ratingBox');
+        const progressFill = document.getElementById('progressFill');
+        const scoreText = document.getElementById('scoreText');
+        const location = document.getElementById('location').value;
 
         if (!fileInput.files[0]) {
-            alert('Please upload an image first!');
+            alert('Upload an image first!');
             return;
         }
 
-        resultDiv.style.display = "block";
-        resultDiv.innerText = "അളിയന്റെ ട്രീറ്റ് നോക്കട്ടെ... ⏳";
-        speakBtn.style.display = "none";
-
-        // Select item sequentially and increment index
         const selected = videoRoasts[currentVideoIndex];
         currentVideoIndex = (currentVideoIndex + 1) % videoRoasts.length;
 
-        // Force reload new video source
+        // Display Score Meter
+        ratingBox.style.display = "block";
+        progressFill.style.width = selected.score + "%";
+        scoreText.innerText = selected.score + "/100";
+
+        // Display Dialogue Text ABOVE Video
+        resultDiv.style.display = "block";
+        resultDiv.innerText = `[At ${location}]: ${selected.text}`;
+        shareBtn.style.display = "flex";
+
+        // Display Reaction Video BELOW Dialogue
+        videoWrapper.style.display = "block";
         videoPlayer.src = selected.video;
-        videoPlayer.style.display = "block";
         videoPlayer.load();
-
-        setTimeout(() => {
-            resultDiv.innerText = selected.text;
-            speakBtn.style.display = "inline-block";
-
-            videoPlayer.muted = false;
-            videoPlayer.play().catch(err => {
-                console.error("Error playing " + selected.video + ":", err);
-                alert("Could not play " + selected.video + ". Ensure the file is in your project folder.");
-            });
-        }, 500);
+        videoPlayer.muted = false;
+        videoPlayer.play().catch(err => console.error("Playback error:", err));
     }
 
-    function replayVideo() {
-        const videoPlayer = document.getElementById('cinemaVideo');
-        if (videoPlayer.src) {
-            videoPlayer.currentTime = 0;
-            videoPlayer.play();
-        }
+    function copyRoast() {
+        const resultText = document.getElementById('result').innerText;
+        navigator.clipboard.writeText(resultText);
+        alert('Roast copied to clipboard!');
     }
 </script>
 
